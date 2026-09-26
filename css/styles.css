@@ -2140,8 +2140,6 @@ select.field {
     transparent 360deg
   );
   animation: radar-sweep-spin 3.6s linear infinite;
-  will-change: transform;
-  transform: translateZ(0);
 }
 @keyframes radar-sweep-spin {
   from { transform: rotate(0deg); }
@@ -3735,28 +3733,6 @@ select.field {
 @media (max-width: 768px) {
   .mob-text { display: inline; }
   .desk-text { display: none; }
-
-  /* Mobile Landing Performance Optimizations (GPU layer isolation, fill-rate preservation, zero visual change) */
-  .lp-hero,
-  .lp-section,
-  .lp-cta-section {
-    contain: paint;
-  }
-
-  .ambient-light,
-  .lp-orb {
-    filter: none !important;
-    transform: translateZ(0) !important;
-    will-change: transform !important;
-  }
-
-  .network-lines-svg path {
-    animation: none !important;
-  }
-
-  .lp-radar-badge {
-    transform: translateZ(0);
-  }
 
   .lp-burger {
     display: flex !important;
