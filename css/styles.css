@@ -2352,6 +2352,7 @@ select.field {
   pointer-events: none;
   overflow: hidden;
   z-index: 1;
+  contain: strict;
 }
 
 /* Layer 2: Subtle Technical Coordinate Grid */
@@ -2510,6 +2511,11 @@ select.field {
   overflow: hidden;
   width: 100%;
   background: var(--lp-bg-dark);
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 700px;
+}
+.lp-hero {
+  content-visibility: visible !important;
 }
 .lp-section > *:not(.section-atmosphere) {
   position: relative;
@@ -3628,6 +3634,7 @@ select.field {
 .reveal.in {
   opacity: 1;
   transform: translateY(0);
+  will-change: auto;
 }
 
 /* Staggered entrance for card grids */
@@ -4049,6 +4056,34 @@ select.field {
     box-sizing: border-box !important;
   }
   .lp-footer-grid { grid-template-columns: 1fr; gap: 20px; }
+
+  /* Mobile Scroll Performance Optimizations (eliminates scroll stutter & high GPU fill rate) */
+  .ambient-light {
+    filter: blur(40px) !important;
+    -webkit-filter: blur(40px) !important;
+  }
+  .lp-orb {
+    filter: blur(45px) !important;
+    -webkit-filter: blur(45px) !important;
+  }
+  .lp-card,
+  .lp-svc,
+  .lp-step,
+  .lp-feat,
+  .lp-stat-card,
+  .lp-cta-glass-card,
+  .lp-preview-map-card,
+  .lp-telemetry-card {
+    backdrop-filter: blur(8px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(140%) !important;
+    transform: translateZ(0);
+  }
+  .network-lines-svg path {
+    animation: none !important;
+  }
+  .telemetry-node .ping-ring {
+    animation: none !important;
+  }
 }
 
 @media (max-width: 480px) {

@@ -942,8 +942,20 @@ const LandingView = {
     // Sticky nav shadow & active link highlight on scroll
     const nav = container.querySelector('#lpNav');
     if (nav) {
+      let isScrolled = false;
+      let ticking = false;
       this._onScroll = () => {
-        nav.classList.toggle('scrolled', window.scrollY > 12);
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            const shouldBeScrolled = window.scrollY > 12;
+            if (shouldBeScrolled !== isScrolled) {
+              isScrolled = shouldBeScrolled;
+              nav.classList.toggle('scrolled', isScrolled);
+            }
+            ticking = false;
+          });
+          ticking = true;
+        }
       };
       window.addEventListener('scroll', this._onScroll, { passive: true });
       this._onScroll();
