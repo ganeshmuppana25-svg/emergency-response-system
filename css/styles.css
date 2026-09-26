@@ -5209,3 +5209,130 @@ select.field {
 
 
 
+
+
+/* ============================================================
+   LANDING MOBILE STABILITY + PERFORMANCE PATCH
+   - Prevents statistic cards from creating horizontal overflow.
+   - Keeps the landing page visually unchanged while reducing
+     expensive continuous paint work during mobile scrolling.
+   ============================================================ */
+@media (max-width: 768px) {
+  /* Grid/flex children must be allowed to shrink inside narrow cards. */
+  #public .lp-stat-card,
+  #public .lp-card,
+  #public .lp-svc,
+  #public .lp-feat,
+  #public .lp-step,
+  #public .telemetry-card,
+  #public .lp-cta-glass-card {
+    min-width: 0;
+  }
+
+  #public .lp-stat-card .stat-content {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  #public .lp-stat-label,
+  #public .stat-desc {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  /* Keep the atmospheric design, but stop large blurred layers from
+     continuously repainting while the user scrolls on a phone. */
+  #public .lp-orb,
+  #public .ambient-light {
+    animation: none !important;
+    will-change: auto !important;
+    transform: none !important;
+    filter: blur(64px);
+  }
+
+  /* Network paths are decorative on mobile; their static geometry remains. */
+  #public .network-lines-svg path,
+  #public .lp-network-svg .net-path {
+    animation: none !important;
+  }
+
+  #public .telemetry-node .ping-ring {
+    animation: none !important;
+    opacity: .55;
+  }
+
+  /* Remove persistent compositor hints from reveal cards after their
+     transition starts; this lowers GPU memory pressure on long pages. */
+  #public .reveal {
+    will-change: auto;
+    transition-duration: .48s;
+  }
+
+  /* Slightly lighter glass blur on mobile keeps the same glass look
+     without the cost of large-area backdrop-filter layers. */
+  #public .lp-stat-card,
+  #public .lp-card,
+  #public .lp-svc,
+  #public .lp-feat,
+  #public .lp-step,
+  #public .telemetry-card,
+  #public .lp-nav,
+  #public .lp-links {
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+  }
+}
+
+@media (max-width: 600px) {
+  /* One-column statistics on narrow phones. This is the critical fix for
+     the screenshot: two-column cards were forcing content beyond the
+     viewport and making horizontal scrolling feel broken. */
+  #public .lp-stats-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100%;
+    gap: 14px;
+  }
+
+  #public .lp-stat-card {
+    width: 100%;
+    min-width: 0;
+    padding: 18px 16px;
+    gap: 14px;
+    overflow: hidden;
+  }
+
+  #public .stat-icon-circle {
+    width: 54px;
+    height: 54px;
+    font-size: 22px;
+  }
+
+  #public .lp-stat-num {
+    font-size: clamp(28px, 8vw, 36px);
+  }
+
+  #public .stat-unit {
+    font-size: 21px;
+  }
+
+  #public .lp-stat-label {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  #public .stat-desc {
+    font-size: 11.5px;
+    line-height: 1.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 768px) {
+  #public .lp-orb,
+  #public .ambient-light,
+  #public .network-lines-svg path,
+  #public .lp-network-svg .net-path,
+  #public .telemetry-node .ping-ring {
+    animation: none !important;
+  }
+}

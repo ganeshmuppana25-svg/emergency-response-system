@@ -942,8 +942,15 @@ const LandingView = {
     // Sticky nav shadow & active link highlight on scroll
     const nav = container.querySelector('#lpNav');
     if (nav) {
+      // Throttle the sticky-nav state update to one paint per frame.
+      // This avoids doing DOM class work repeatedly during fast mobile swipes.
+      let scrollFrame = 0;
       this._onScroll = () => {
-        nav.classList.toggle('scrolled', window.scrollY > 12);
+        if (scrollFrame) return;
+        scrollFrame = requestAnimationFrame(() => {
+          nav.classList.toggle('scrolled', window.scrollY > 12);
+          scrollFrame = 0;
+        });
       };
       window.addEventListener('scroll', this._onScroll, { passive: true });
       this._onScroll();
