@@ -3961,11 +3961,13 @@ select.field {
   }
   .flow-line-fill {
     width: 100% !important;
-    height: 0%;
+    height: 100% !important;
+    transform-origin: top center !important;
+    transform: scaleY(0);
     background: linear-gradient(180deg, #ef4444 0%, #3b82f6 35%, #06b6d4 70%, #10b981 100%) !important;
     box-shadow: 0 0 14px rgba(6, 182, 212, 0.65) !important;
     border-radius: 4px !important;
-    transition: height 0.7s cubic-bezier(0.25, 1, 0.35, 1) !important;
+    transition: transform 0.7s cubic-bezier(0.25, 1, 0.35, 1) !important;
     position: relative !important;
   }
   .flow-line-fill::after {
@@ -5217,12 +5219,17 @@ select.field {
     word-break: normal;
   }
 
+  /* ==================== SECTION LAYOUT & PAINT ISOLATION ==================== */
+  #public .lp-hero,
+  #public .lp-section {
+    contain: layout paint;
+  }
+
   /* ==================== MOBILE BACKGROUND ANIMATION (ALIVE & SUBTLE) ==================== */
   /* Gentle, GPU-composited atmospheric light breathing (0.16 -> 0.42 opacity) */
   #public .ambient-light {
-    filter: blur(55px);
+    filter: blur(20px);
     transform: translateZ(0) !important;
-    will-change: opacity;
     animation: mobileAmbientBreathe1 9.5s ease-in-out infinite alternate !important;
   }
   #public .ambient-light:nth-of-type(2n) {
@@ -5239,9 +5246,8 @@ select.field {
     animation-delay: -2.7s !important;
   }
   #public .lp-orb {
-    filter: blur(55px);
+    filter: blur(20px);
     transform: translateZ(0) !important;
-    will-change: opacity;
     animation: mobileAmbientBreathe1 9s ease-in-out infinite alternate !important;
   }
   #public .lp-orb.lp-orb-red {
@@ -5259,12 +5265,10 @@ select.field {
   #public .network-lines-svg path {
     stroke-dasharray: 6 8 !important;
     animation: netDashSlow 18s linear infinite !important;
-    will-change: stroke-dashoffset;
   }
   #public .network-lines-svg path.rev {
     stroke-dasharray: 6 8 !important;
     animation: netDashSlowRev 16s linear infinite !important;
-    will-change: stroke-dashoffset;
   }
   #public .lp-network-svg {
     pointer-events: none;
@@ -5274,23 +5278,20 @@ select.field {
   #public .lp-network-svg .path-1 {
     stroke-dasharray: 6 8 !important;
     animation: netDash 16s linear infinite !important;
-    will-change: stroke-dashoffset;
   }
   #public .lp-network-svg .path-2 {
     stroke-dasharray: 6 8 !important;
     animation: netDashRev 18s linear infinite !important;
-    will-change: stroke-dashoffset;
   }
   #public .lp-network-svg .path-3 {
     stroke-dasharray: 6 8 !important;
     animation: netDash 14s linear infinite !important;
-    will-change: stroke-dashoffset;
   }
 
   /* Animated Curved Radar Arc Lines across all sections */
   #public .radar-arc-decor {
     animation: radarArcSpin 45s linear infinite !important;
-    will-change: transform;
+    transform-origin: center center;
     opacity: 0.75;
   }
   #public .radar-arc-decor.arc-cyan {
@@ -5307,11 +5308,9 @@ select.field {
   #public .telemetry-node .ping-ring {
     animation: pingNodeSlow 3.8s ease-out infinite !important;
     opacity: 0.6;
-    will-change: transform, opacity;
   }
   #public .telemetry-node .dot {
     animation: mobileNodeTwinkle 4.2s ease-in-out infinite !important;
-    will-change: opacity, transform;
   }
   #public .telemetry-node:nth-of-type(even) .dot {
     animation-duration: 4.8s !important;
@@ -5328,20 +5327,23 @@ select.field {
   }
 
   /* ==================== MOBILE CARD SCROLLING & JITTER FIX ==================== */
-  /* Hardware-accelerated translate3d with smooth entrance */
+  /* Gentle, smooth 8px entrance without fighting scroll inertia */
   #public .reveal {
     opacity: 0;
-    transform: translate3d(0, 16px, 0);
-    transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1), transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: opacity, transform;
+    transform: translate3d(0, 8px, 0);
+    transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
   }
   #public .reveal.in {
     opacity: 1;
     transform: translate3d(0, 0, 0);
   }
   #public .reveal.in.settled {
-    transform: none;
-    will-change: auto;
+    transform: none !important;
+    transition: none !important;
+  }
+  #public .lp-map-container.reveal {
+    transform: none !important;
+    transition: opacity 0.32s ease-out !important;
   }
 
   /* Remove desktop horizontal grid stagger delays on single-column mobile */
@@ -5360,20 +5362,29 @@ select.field {
   #public .lp-step:hover,
   #public .lp-stat-card:hover {
     transform: none !important;
+    box-shadow: none !important;
   }
 
-  /* Slightly lighter glass blur on mobile keeps the same glass look
-     without the cost of large-area backdrop-filter layers. */
+  /* Optimized glassmorphism: fast, unified blur for main cards; remove nested/redundant blurs */
   #public .lp-stat-card,
   #public .lp-card,
   #public .lp-svc,
   #public .lp-feat,
   #public .lp-step,
   #public .telemetry-card,
+  #public .lp-cta-glass-card,
   #public .lp-nav,
   #public .lp-links {
-    backdrop-filter: blur(10px) saturate(150%);
-    -webkit-backdrop-filter: blur(10px) saturate(150%);
+    backdrop-filter: blur(8px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(140%) !important;
+  }
+
+  #public .lp-radar-wrapper,
+  #public .status-widget,
+  #public .flow-step,
+  #public .lp-map-container {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 }
 

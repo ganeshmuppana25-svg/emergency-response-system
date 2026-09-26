@@ -936,13 +936,18 @@ const LandingView = {
     // Sticky nav shadow & active link highlight on scroll
     const nav = container.querySelector('#lpNav');
     if (nav) {
-      // Throttle the sticky-nav state update to one paint per frame.
-      // This avoids doing DOM class work repeatedly during fast mobile swipes.
+      // Throttle the sticky-nav state update to one paint per frame with state change guard.
+      // This eliminates DOM class manipulation and style recalcs on every scroll frame.
+      let isScrolled = null;
       let scrollFrame = 0;
       this._onScroll = () => {
         if (scrollFrame) return;
         scrollFrame = requestAnimationFrame(() => {
-          nav.classList.toggle('scrolled', window.scrollY > 12);
+          const next = window.scrollY > 12;
+          if (next !== isScrolled) {
+            isScrolled = next;
+            nav.classList.toggle('scrolled', isScrolled);
+          }
           scrollFrame = 0;
         });
       };
@@ -950,7 +955,7 @@ const LandingView = {
       this._onScroll();
     }
 
-    // Scroll reveal observer
+    // Scroll reveal observer - smooth entry with GPU compositor settling
     const reveals = container.querySelectorAll('.reveal');
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
@@ -960,24 +965,11 @@ const LandingView = {
             io.unobserve(en.target);
             setTimeout(() => {
               en.target.classList.add('settled');
-            }, 500);
+            }, 360);
           }
         });
-      }, { threshold: 0.05, rootMargin: '0px 0px 48px 0px' });
+      }, { threshold: 0.05, rootMargin: '0px 0px 80px 0px' });
       reveals.forEach(el => io.observe(el));
-
-      // Fallback timeout to guarantee visibility
-      setTimeout(() => {
-        reveals.forEach(el => {
-          if (!el.classList.contains('in')) {
-            const r = el.getBoundingClientRect();
-            if (r.top < window.innerHeight && r.bottom > 0) {
-              el.classList.add('in');
-              el.classList.add('settled');
-            }
-          }
-        });
-      }, 500);
     } else {
       reveals.forEach(el => {
         el.classList.add('in');
@@ -1046,10 +1038,12 @@ const LandingView = {
         const pct = flowSteps.length > 1 ? (idx / (flowSteps.length - 1)) * 100 : 0;
         if (window.innerWidth <= 768) {
           flowFill.style.setProperty('width', '100%', 'important');
-          flowFill.style.setProperty('height', pct + '%', 'important');
+          flowFill.style.setProperty('height', '100%', 'important');
+          flowFill.style.setProperty('transform', `scaleY(${pct / 100})`, 'important');
         } else {
           flowFill.style.setProperty('width', pct + '%', 'important');
           flowFill.style.setProperty('height', '100%', 'important');
+          flowFill.style.removeProperty('transform');
         }
       };
 
