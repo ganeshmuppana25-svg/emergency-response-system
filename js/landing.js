@@ -943,18 +943,11 @@ const LandingView = {
     const nav = container.querySelector('#lpNav');
     if (nav) {
       let isScrolled = false;
-      let ticking = false;
       this._onScroll = () => {
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            const shouldBeScrolled = window.scrollY > 12;
-            if (shouldBeScrolled !== isScrolled) {
-              isScrolled = shouldBeScrolled;
-              nav.classList.toggle('scrolled', isScrolled);
-            }
-            ticking = false;
-          });
-          ticking = true;
+        const scrolled = window.scrollY > 12;
+        if (scrolled !== isScrolled) {
+          isScrolled = scrolled;
+          nav.classList.toggle('scrolled', isScrolled);
         }
       };
       window.addEventListener('scroll', this._onScroll, { passive: true });
