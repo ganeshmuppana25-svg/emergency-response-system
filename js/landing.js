@@ -276,12 +276,6 @@ const LandingView = {
             </div>
             <h2 class="live-section-title">Live <span class="grad-preview">Response Preview</span></h2>
             <p class="live-section-subtitle">See how ERMS coordinates emergency response in real-time, from incident report to resolution.</p>
-            <div class="head-action">
-              <button class="btn btn-outline lp-full-demo-btn" data-goto="demo">
-                <span>View Full Demo</span>
-                <span class="btn-arrow">→</span>
-              </button>
-            </div>
           </div>
 
           <!-- 6-Stage Incident Lifecycle Flow -->
@@ -964,9 +958,12 @@ const LandingView = {
           if (en.isIntersecting) {
             en.target.classList.add('in');
             io.unobserve(en.target);
+            setTimeout(() => {
+              en.target.classList.add('settled');
+            }, 500);
           }
         });
-      }, { threshold: 0.1 });
+      }, { threshold: 0.05, rootMargin: '0px 0px 48px 0px' });
       reveals.forEach(el => io.observe(el));
 
       // Fallback timeout to guarantee visibility
@@ -974,12 +971,18 @@ const LandingView = {
         reveals.forEach(el => {
           if (!el.classList.contains('in')) {
             const r = el.getBoundingClientRect();
-            if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('in');
+            if (r.top < window.innerHeight && r.bottom > 0) {
+              el.classList.add('in');
+              el.classList.add('settled');
+            }
           }
         });
       }, 500);
     } else {
-      reveals.forEach(el => el.classList.add('in'));
+      reveals.forEach(el => {
+        el.classList.add('in');
+        el.classList.add('settled');
+      });
     }
 
     // Animated numerical counters for statistics
