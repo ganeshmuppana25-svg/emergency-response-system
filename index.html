@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Emergency Response Management System demo (LocalStorage, no backend).">
+  <title>Emergency Response Management System</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚨</text></svg>">
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Leaflet (OpenStreetMap) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Permanent Dark Theme & Scroll Initialization -->
+  <script>
+    document.documentElement.dataset.theme = 'dark';
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+  </script>
+</head>
+<body>
+
+  <!-- ==================== PUBLIC LANDING (Phase 2) ==================== -->
+  <div id="public" style="display:none"></div>
+
+  <!-- ==================== LOGIN ==================== -->
+  <div class="login-wrap" id="login" style="display:none">
+    <!-- Atmospheric Background (Technical Grid, 4 Corner Glows & Network Graphic) -->
+    <div class="login-atmosphere" aria-hidden="true">
+      <div class="login-grid"></div>
+      <div class="login-corner-glow glow-top-left"></div>
+      <div class="login-corner-glow glow-top-right"></div>
+      <div class="login-corner-glow glow-bottom-left"></div>
+      <div class="login-corner-glow glow-bottom-right"></div>
+      <svg class="login-network-svg" viewBox="0 0 1440 900" preserveAspectRatio="none">
+        <path class="login-net-path" d="M0,180 Q360,260 720,150 T1440,200" />
+        <path class="login-net-path rev" d="M0,740 Q450,620 920,760 T1440,660" />
+        <path class="login-net-line" d="M160,0 Q220,450 160,900" />
+        <path class="login-net-line rev" d="M1280,0 Q1220,450 1280,900" />
+        <g class="login-net-node node-blue" transform="translate(160, 240)">
+          <circle class="node-core" r="3.5" fill="#3b82f6" />
+          <circle class="ping" r="8" fill="none" stroke="#3b82f6" opacity="0.6" />
+        </g>
+        <g class="login-net-node node-red" transform="translate(1280, 200)">
+          <circle class="node-core" r="3.5" fill="#ef4444" />
+          <circle class="ping" r="8" fill="none" stroke="#ef4444" opacity="0.6" />
+        </g>
+        <g class="login-net-node node-cyan" transform="translate(200, 700)">
+          <circle class="node-core" r="3.5" fill="#06b6d4" />
+          <circle class="ping" r="8" fill="none" stroke="#06b6d4" opacity="0.6" />
+        </g>
+        <g class="login-net-node node-red" transform="translate(1240, 720)">
+          <circle class="node-core" r="3.5" fill="#ef4444" />
+          <circle class="ping" r="8" fill="none" stroke="#ef4444" opacity="0.6" />
+        </g>
+      </svg>
+    </div>
+
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="logo">🚨</div>
+        <div>
+          <h1>Emergency Response</h1>
+          <p>Management System</p>
+        </div>
+      </div>
+      <p class="login-sub">Sign in to access your role-based emergency dashboard.</p>
+
+      <div class="login-error" id="loginError" role="alert"></div>
+
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label for="loginEmail">Username / Email Address</label>
+          <input type="email" class="field" id="loginEmail" placeholder="you@demo.com" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <div class="input-wrap">
+            <input type="password" class="field" id="loginPassword" placeholder="Enter your password"
+                   autocomplete="current-password" style="padding-right:44px;">
+            <button type="button" class="toggle-pass" id="togglePass" title="Show / hide password">👁️</button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg btn-block" id="loginBtn">🔐 Sign In</button>
+      </form>
+
+      <div class="demo-accounts">
+        <h4>Demo accounts — click to fill (password: demo123)</h4>
+        <div class="demo-row" data-email="citizen@demo.com"  data-password="demo123">
+          <span class="who">🧑 Citizen — Rahul Sharma</span><span class="cred">citizen@demo.com</span>
+        </div>
+        <div class="demo-row" data-email="operator@demo.com" data-password="demo123">
+          <span class="who">🖥️ Emergency Operator</span><span class="cred">operator@demo.com</span>
+        </div>
+        <div class="demo-row" data-email="team@demo.com"     data-password="demo123">
+          <span class="who">🚑 Response Team — Ambulance 01</span><span class="cred">team@demo.com</span>
+        </div>
+        <div class="demo-row" data-email="admin@demo.com"    data-password="demo123">
+          <span class="who">⚙️ Administrator</span><span class="cred">admin@demo.com</span>
+        </div>
+      </div>
+
+      <p class="hint-text text-center mt-2">
+        Demonstration system — not a production emergency dispatch platform.<br>
+        All data is stored locally in your browser (LocalStorage).
+      </p>
+    </div>
+
+    <div class="login-float-link">
+      <button class="btn btn-back-home" data-goto="landing">
+        <span class="btn-arrow">←</span> Back to Home
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== APP SHELL ==================== -->
+  <div id="app">
+    <header class="topbar" id="topbar"></header>
+    <main class="view" id="view"></main>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Application modules (order matters) -->
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/helpers.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/incidents.js"></script>
+  <script src="js/teams.js"></script>
+  <script src="js/simulation.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/citizen.js"></script>
+  <script src="js/operator.js"></script>
+  <script src="js/team.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/login.js"></script>
+  <script src="js/landing.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

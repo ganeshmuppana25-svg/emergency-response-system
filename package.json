@@ -1,0 +1,15 @@
+{
+  "name": "emergency-system",
+  "version": "1.0.0",
+  "description": "A fully functional, professional emergency-response web application demo built with **pure HTML, CSS & JavaScript**. All data is persisted in **LocalStorage** — no database, no backend, no AI/ML/prediction, no paid APIs.",
+  "main": "smoke-test.js",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}

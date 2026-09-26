@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.bak
+*.tmp
+
+# Logs & Playwright
+*.log
+playwright-report/
+test-results/
