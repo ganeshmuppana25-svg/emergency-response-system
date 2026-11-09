@@ -1,4 +1,4 @@
-# 🚨 Emergency Response Management System — Phase 2
+# 🚨 Emergency Response Management System 
 
 A fully functional, professional emergency-response web application demo built with **pure HTML, CSS & JavaScript**. All data is persisted in **LocalStorage** — no database, no backend, no AI/ML/prediction, no paid APIs.
 
